@@ -6,9 +6,13 @@ import wordmatch
 
 class Puzzle:
 
-    now = datetime.datetime.now()
+    def __init__(self, date="", psid=""):
+        now = datetime.datetime.now()
+        if len(date) is 0:
+            date = str(now.year) + "-" + str(now.month) + "-" + str(now.day)
+        if len(psid) is 0:
+            psid = "100000252"
 
-    def __init__(self, date=str(now.year) + "-" + str(now.month) + "-" + str(now.day), psid="100000252"):
         self.date = date
         url = "https://data.puzzlexperts.com/puzzleapp/data.php?psid=" + psid + "&date=" + date
         array = webparser.WebParser(url).parse_to_array()
