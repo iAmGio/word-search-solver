@@ -1,6 +1,7 @@
 import datetime
 import webparser
 import puzzleraw
+import wordmatch
 
 
 class Puzzle:
@@ -12,8 +13,9 @@ class Puzzle:
         url = "https://data.puzzlexperts.com/puzzleapp/data.php?psid=" + psid + "&date=" + date
         array = webparser.WebParser(url).parse_to_array()
         raw = puzzleraw.PuzzleRaw(array)
-        self.pairs = raw.make_pairs()
-        self.scheme = self.pairs[0]
+        pairs = raw.make_pairs()
+        self.scheme = pairs[0]
+        self.words = pairs[1]
 
     @staticmethod
     def find_indexes(line, char):
@@ -89,12 +91,14 @@ class Puzzle:
             return False
 
     def match(self, word):
-        word = word.replace(" ", "")
-        first_char = word[0]
+        if word[0] is " ":
+            word = word[1:len(word)]
+        formatted_word = word.replace(" ", "")
+        first_char = formatted_word[0]
         for occurrence in self.find_occurrences(first_char):
             line_index = occurrence[0]
             for index in occurrence[1]:
-                for near in self.find_near_occurrences(word[1], index, line_index):
-                    match = self.match_word_part(word, index, occurrence[0], near[2])
+                for near in self.find_near_occurrences(formatted_word[1], index, line_index):
+                    match = self.match_word_part(formatted_word, index, occurrence[0], near[2])
                     if match:
-                        return [[index, line_index], [match[0], match[1]]]
+                        return wordmatch.WordMatch(word, [index, line_index], [match[0], match[1]], near[2])
