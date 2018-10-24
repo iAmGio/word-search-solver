@@ -21,6 +21,9 @@ class Puzzle:
         self.scheme = pairs[0]
         self.words = pairs[1]
 
+    """
+    Finds occurrences of the character in a line
+    """
     @staticmethod
     def find_indexes(line, char):
         indexes = []
@@ -29,12 +32,18 @@ class Puzzle:
                 indexes.append(i)
         return indexes
 
+    """
+    Finds occurrences of the character in the grid
+    """
     def find_occurrences(self, char):
         loc = []
         for i in range(len(self.scheme)):
             loc.append([i, self.find_indexes(self.scheme[i], char)])
         return loc
 
+    """
+    Returns adjacent slots (relative to a slot)
+    """
     def get_near(self, index, line_index):
         scheme = self.scheme
         near = []
@@ -66,6 +75,9 @@ class Puzzle:
 
         return near
 
+    """
+    Finds occurrences of the character in the adjacent slots (relative to a slot)
+    """
     def find_near_occurrences(self, char, index, line_index):
         occurrences = []
         for near in self.get_near(index, line_index):
@@ -73,6 +85,9 @@ class Puzzle:
                 occurrences.append(near)
         return occurrences
 
+    """
+    Finds occurrences of string given a direction and a location
+    """
     def match_word_part(self, word_part, index, line_index, direction):
         if len(word_part) is 1:
             return [index, line_index]
@@ -94,6 +109,9 @@ class Puzzle:
         except IndexError:
             return False
 
+    """
+    Finds the word inside of the grid 
+    """
     def match(self, word):
         if word[0] is " ":
             word = word[1:len(word)]
